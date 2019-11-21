@@ -63,6 +63,7 @@ function createServer(){
 
                     request.on('data', chunk => {
                         body += chunk.toString()
+                        console.log(body)
                         //postman
                         const user = JSON.parse(body)
                         const { name } = user
@@ -87,24 +88,17 @@ function createServer(){
         if (request.method === 'DELETE'){
             const tab = pathname.split('/')
             const studentID = tab[2]
-            const id = parseInt(studentID)
-            const index = id-1
+            const i = parseInt(studentID)
+            const index = i - 1 
             if (pathname === `/students/${studentID}`){
-
                 if (fs.existsSync(LOCAL_DATABASE)) {
-                    //1 get data
-                    let body = ''
-
-                    request.on('data', chunk => {
-                        body += chunk.toString()
-
-                        for (const elt of file){
-                            if (elt.id === id){
-                                file.splice(index,index)
-                            }
+                    for (const elt of file){
+                        if (elt.id === parseInt(studentID)){
+                            file.splice(index, index)
+                            console.log(file)
                         }
-                        fs.writeFileSync(LOCAL_DATABASE, JSON.stringify(file))
-                    })
+                    }
+                    fs.writeFileSync(LOCAL_DATABASE, JSON.stringify(file))
 
                     request.on('end', () => {     
                         fs.writeFileSync(LOCAL_DATABASE, JSON.stringify(file, null, 4), function (err) {
@@ -113,7 +107,6 @@ function createServer(){
                     })
                 }
             }
-            console.log(`Deleted student ${id}!`)
             console.log(`${request.method} status : OK`)
         }
 
